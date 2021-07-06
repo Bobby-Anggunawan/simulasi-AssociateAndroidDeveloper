@@ -5,13 +5,13 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 object FilterUtils {
 
     fun getFilteredQuery(filter: TasksFilterType): SimpleSQLiteQuery {
-        val simpleQuery = StringBuilder().append("SELECT * FROM tasks ")
+        val simpleQuery = StringBuilder().append("SELECT * FROM Task ")
         when (filter) {
             TasksFilterType.COMPLETED_TASKS -> {
-                simpleQuery.append("WHERE completed = 1")
+                simpleQuery.append("WHERE isCompleted = 1")
             }
             TasksFilterType.ACTIVE_TASKS -> {
-                simpleQuery.append("WHERE completed = 0")
+                simpleQuery.append("WHERE isCompleted = 0")
             }
             else -> {
                 // ALL_TASKS

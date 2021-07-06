@@ -1,8 +1,12 @@
 package com.dicoding.todoapp.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 //TODO 1 : Define a local database table using the schema in app/schema/tasks.json
+@Entity
 data class Task(
-    val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String,
     val description: String,
     val dueDateMillis: Long,

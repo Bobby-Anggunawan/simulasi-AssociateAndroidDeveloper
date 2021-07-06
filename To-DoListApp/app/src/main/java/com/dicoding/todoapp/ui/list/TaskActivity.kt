@@ -1,5 +1,7 @@
 package com.dicoding.todoapp.ui.list
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -11,9 +13,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dicoding.todoapp.R
 import com.dicoding.todoapp.data.Task
+import com.dicoding.todoapp.data.TaskDatabase
 import com.dicoding.todoapp.setting.SettingsActivity
 import com.dicoding.todoapp.ui.ViewModelFactory
 import com.dicoding.todoapp.ui.add.AddTaskActivity
@@ -26,6 +30,7 @@ class TaskActivity : AppCompatActivity() {
 
     private lateinit var recycler: RecyclerView
     private lateinit var taskViewModel: TaskViewModel
+    private lateinit var myAdapter: TaskAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +43,7 @@ class TaskActivity : AppCompatActivity() {
         }
 
         //TODO 6 : Initiate RecyclerView with LayoutManager
-
+        recycler = findViewById(R.id.rv_task)
         initAction()
 
         val factory = ViewModelFactory.getInstance(this)
@@ -46,11 +51,24 @@ class TaskActivity : AppCompatActivity() {
 
         taskViewModel.tasks.observe(this, Observer(this::showRecyclerView))
 
-        //TODO 15 : Fixing bug : snackBar not show when task completed
+        recycler.setHasFixedSize(true)
+        myAdapter = TaskAdapter({task, taskCompleate->
+            //TODO 15 : Fixing bug : snackBar not show when task completed
+            taskViewModel.completeTask(task, taskCompleate)
+            if(taskCompleate){
+                showSnackBar(Event(R.string.task_marked_complete))
+            }
+            else{
+                showSnackBar(Event(R.string.task_marked_active))
+            }
+        })
+        recycler.adapter = myAdapter
+        recycler.layoutManager = LinearLayoutManager(this)
     }
 
     private fun showRecyclerView(task: PagedList<Task>) {
         //TODO 7 : Submit pagedList to adapter and update database when onCheckChange
+        myAdapter.submitList(task)
     }
 
     private fun showSnackBar(eventMessage: Event<Int>) {

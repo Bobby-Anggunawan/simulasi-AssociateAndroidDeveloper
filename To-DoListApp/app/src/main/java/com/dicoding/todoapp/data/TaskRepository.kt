@@ -2,7 +2,11 @@ package com.dicoding.todoapp.data
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.dicoding.todoapp.utils.FilterUtils
 import com.dicoding.todoapp.utils.TasksFilterType
 
 class TaskRepository(private val tasksDao: TaskDao) {
@@ -27,9 +31,17 @@ class TaskRepository(private val tasksDao: TaskDao) {
     }
 
     //TODO 4 : Use FilterUtils.getFilteredQuery to create filterable query
+    fun filterQuery(filter: TasksFilterType): DataSource.Factory<Int, Task>{
+        return tasksDao.getTasks(FilterUtils.getFilteredQuery(filter))
+    }
     //TODO 5 : Build PagedList with configuration
     fun getTasks(filter: TasksFilterType): LiveData<PagedList<Task>> {
-        throw NotImplementedError("Not yet implemented")
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(PLACEHOLDERS)
+            .setInitialLoadSizeHint(PAGE_SIZE)
+            .setPageSize(PAGE_SIZE)
+            .build()
+        return LivePagedListBuilder(filterQuery(filter), config).build()
     }
 
     fun getTaskById(taskId: Int): LiveData<Task> {

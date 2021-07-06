@@ -1,22 +1,32 @@
 package com.dicoding.todoapp.ui.add
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.dicoding.todoapp.R
+import com.dicoding.todoapp.data.Task
+import com.dicoding.todoapp.databinding.ActivityAddTaskBinding
+import com.dicoding.todoapp.databinding.ActivityTaskDetailBinding
+import com.dicoding.todoapp.ui.ViewModelFactory
+import com.dicoding.todoapp.ui.detail.DetailTaskViewModel
+import com.dicoding.todoapp.ui.list.TaskActivity
 import com.dicoding.todoapp.utils.DatePickerFragment
 import java.text.SimpleDateFormat
 import java.util.*
 
 class AddTaskActivity : AppCompatActivity(), DatePickerFragment.DialogDateListener {
     private var dueDateMillis: Long = System.currentTimeMillis()
+    private lateinit var binding: ActivityAddTaskBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_task)
+        binding = ActivityAddTaskBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         supportActionBar?.title = getString(R.string.add_task)
 
@@ -31,6 +41,15 @@ class AddTaskActivity : AppCompatActivity(), DatePickerFragment.DialogDateListen
         return when (item.itemId) {
             R.id.action_save -> {
                 //TODO 12 : Create AddTaskViewModel and insert new task to database
+                val factory = ViewModelFactory.getInstance(this)
+                val taskViewModel = ViewModelProvider(this, factory).get(AddTaskViewModel::class.java)
+
+                //build task object
+                val title = binding.addEdTitle.text.toString()
+                val description = binding.addEdDescription.text.toString()
+                taskViewModel.addTask(Task(0, title, description, dueDateMillis))
+                val detailIntent = Intent(this, TaskActivity::class.java)
+                this.startActivity(detailIntent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
