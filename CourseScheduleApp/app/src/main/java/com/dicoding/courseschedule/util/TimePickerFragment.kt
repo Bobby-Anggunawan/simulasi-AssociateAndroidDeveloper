@@ -24,11 +24,6 @@ class TimePickerFragment: DialogFragment(), TimePickerDialog.OnTimeSetListener {
         mListener?.onDialogTimeSet(tag, hour, minute)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mListener = context as DialogTimeListener?
-    }
-
     override fun onDetach() {
         super.onDetach()
         if (mListener != null) {
@@ -38,5 +33,9 @@ class TimePickerFragment: DialogFragment(), TimePickerDialog.OnTimeSetListener {
 
     interface DialogTimeListener {
         fun onDialogTimeSet(tag: String?, hour: Int, minute: Int)
+    }
+
+    fun setListener(listener: DialogTimeListener) {
+        mListener = listener
     }
 }

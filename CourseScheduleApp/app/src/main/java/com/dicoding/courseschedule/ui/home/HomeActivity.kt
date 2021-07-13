@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.courseschedule.R
 import com.dicoding.courseschedule.data.Course
+import com.dicoding.courseschedule.ui.add.AddCourseActivity
 import com.dicoding.courseschedule.ui.list.ListActivity
 import com.dicoding.courseschedule.ui.list.ListViewModel
 import com.dicoding.courseschedule.ui.list.ListViewModelFactory
@@ -82,6 +83,7 @@ class HomeActivity : AppCompatActivity() {
         val intent: Intent = when (item.itemId) {
             R.id.action_settings -> Intent(this, SettingsActivity::class.java)
             R.id.action_list -> Intent(this, ListActivity::class.java)
+            R.id.action_add -> Intent(this, AddCourseActivity::class.java)
             else -> null
         } ?: return super.onOptionsItemSelected(item)
 
