@@ -7,8 +7,11 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.dicoding.courseschedule.R
 import com.dicoding.courseschedule.data.Course
+import com.dicoding.courseschedule.ui.list.ListViewModel
+import com.dicoding.courseschedule.ui.list.ListViewModelFactory
 import com.dicoding.courseschedule.ui.setting.SettingsActivity
 import com.dicoding.courseschedule.util.DayName
 import com.dicoding.courseschedule.util.QueryType
@@ -20,11 +23,19 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var viewModel: HomeViewModel
     private var queryType = QueryType.CURRENT_DAY
 
-    //TODO 5 : Show today schedule in CardHomeView and implement menu action
+    //TODO 5(DONE1/2 implement menu action) : Show today schedule in CardHomeView and implement menu action
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         supportActionBar?.title = resources.getString(R.string.today_schedule)
+
+        //init viewmodel
+        val factory = ListViewModelFactory.createFactory(this)
+        viewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
+
+        viewModel.getTodaySchedule().observe(this, {
+            showTodaySchedule(it)
+        })
 
     }
 
@@ -35,7 +46,13 @@ class HomeActivity : AppCompatActivity() {
             val time = String.format(getString(R.string.time_format), dayName, startTime, endTime)
             val remainingTime = timeDifference(day, startTime)
 
+            //masukkan data ke card
             val cardHome = findViewById<CardHomeView>(R.id.view_home)
+            cardHome.setCourseName(course.courseName)
+            cardHome.setLecturer(course.lecturer)
+            cardHome.setNote(course.note)
+            cardHome.setRemainingTime(remainingTime)
+            cardHome.setTime(time)
 
         }
 

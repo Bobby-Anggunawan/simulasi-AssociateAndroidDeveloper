@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import com.dicoding.courseschedule.data.DataRepository
 import com.dicoding.courseschedule.util.QueryType
 
-class HomeViewModel(repository: DataRepository): ViewModel() {
+class HomeViewModel(val repository: DataRepository): ViewModel() {
 
     private val _queryType = MutableLiveData<QueryType>()
+
+    fun getTodaySchedule() = repository.getNearestSchedule(_queryType.value!!)
 
     init {
         _queryType.value = QueryType.CURRENT_DAY
