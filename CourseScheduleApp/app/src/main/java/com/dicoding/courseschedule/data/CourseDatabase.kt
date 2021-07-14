@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.dicoding.courseschedule.util.DayName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import java.util.*
 
 //TODO 3(DONE___) : Define room database class
 @Database(entities = arrayOf(Course::class), version = 1)
