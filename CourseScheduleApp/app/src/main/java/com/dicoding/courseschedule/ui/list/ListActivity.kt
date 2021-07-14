@@ -81,7 +81,7 @@ class ListActivity : AppCompatActivity() {
         }
     }
 
-    //TODO 14 : Fixing bug : sort menu not show and course not deleted when list is swiped
+    //TODO 14(DONE) : Fixing bug : sort menu not show and course not deleted when list is swiped
     private fun showSortMenu() {
         val view = findViewById<View>(R.id.action_sort) ?: return
         PopupMenu(this, view).run {
@@ -109,6 +109,7 @@ class ListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_sort -> {
+                showSortMenu()
                 true
             }
             R.id.action_settings -> {
@@ -139,7 +140,8 @@ class ListActivity : AppCompatActivity() {
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val course = (viewHolder as CourseViewHolder).getCourse()
-
+            viewModel.delete(course)
+            rvCourse.adapter?.notifyDataSetChanged()
         }
     }
 }

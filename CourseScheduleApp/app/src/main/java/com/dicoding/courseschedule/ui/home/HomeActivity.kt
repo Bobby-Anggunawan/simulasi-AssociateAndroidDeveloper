@@ -19,7 +19,7 @@ import com.dicoding.courseschedule.util.DayName
 import com.dicoding.courseschedule.util.QueryType
 import com.dicoding.courseschedule.util.timeDifference
 
-//TODO 15 : Write UI test to validate when user tap Add Course (+) Menu, the AddCourseActivity is displayed
+//TODO 15(DONE) : Write UI test to validate when user tap Add Course (+) Menu, the AddCourseActivity is displayed
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var viewModel: HomeViewModel

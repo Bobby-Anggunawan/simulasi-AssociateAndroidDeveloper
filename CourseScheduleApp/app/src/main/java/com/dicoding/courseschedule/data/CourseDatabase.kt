@@ -45,13 +45,15 @@ abstract class CourseDatabase : RoomDatabase() {
         }
 
         private fun fillWithStartingData(dao: CourseDao){
+            //todo ini saya tambahkan cuma untuk test jadi saya comment waktu dikumpul
+            /*
             dao.insert(Course(1, "Matematika", 1, "23:00","23:50", "Guru Matematika", "Belajar mtk"))
             dao.insert(Course(2, "Bahasa Indonesia", 2, "23:00","23:50", "Guru B.Indo", "Belajar b indo"))
             dao.insert(Course(3, "Algoritma", 3, "23:00","23:50", "Guru Algoritma", "Belajar algo"))
             dao.insert(Course(4, "PPKN", 4, "23:00","23:50", "Guru PPKN", "Belajar pkn"))
             dao.insert(Course(5, "Biologi", 5, "23:00","23:50", "Guru Biologi", "Belajar bio"))
             dao.insert(Course(6, "Fisika", 6, "23:00","23:50", "Guru Fisika", "Belajar fisika"))
-            dao.insert(Course(7, "Ekonomi", 7, "23:00","23:50", "Guru Ekonomi", "Belajar ekonomi"))
+            dao.insert(Course(7, "Ekonomi", 7, "23:00","23:50", "Guru Ekonomi", "Belajar ekonomi"))*/
         }
 
     }
