@@ -31,12 +31,12 @@ class HabitRepository(private val habitDao: HabitDao, private val executor: Exec
         }
     }
 
-    //TODO 4(DONE) : Use SortUtils.getSortedQuery to create sortable query and build paged list
+    //TODO 4 : Use SortUtils.getSortedQuery to create sortable query and build paged list
     fun getHabits(filter: HabitSortType): LiveData<PagedList<Habit>> {
         return LivePagedListBuilder(habitDao.getHabits(SortUtils.getSorteredQuery(filter)), 1).build()
     }
 
-    //TODO 5(DONE) : Complete other function inside repository
+    //TODO 5 : Complete other function inside repository
     fun getHabitById(habitId: Int): LiveData<Habit> {
         return habitDao.getHabitById(habitId)
     }
@@ -52,6 +52,6 @@ class HabitRepository(private val habitDao: HabitDao, private val executor: Exec
     }
 
     fun getRandomHabitByPriorityLevel(level: String): LiveData<Habit> {
-        throw NotImplementedError("Not yet implemented")
+        return habitDao.getRandomHabitByPriorityLevel(level)
     }
 }

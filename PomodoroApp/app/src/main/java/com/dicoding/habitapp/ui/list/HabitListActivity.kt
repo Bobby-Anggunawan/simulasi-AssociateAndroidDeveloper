@@ -6,21 +6,29 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.dicoding.habitapp.R
 import com.dicoding.habitapp.data.Habit
+import com.dicoding.habitapp.setting.SettingsActivity
 import com.dicoding.habitapp.ui.ViewModelFactory
 import com.dicoding.habitapp.ui.add.AddHabitActivity
 import com.dicoding.habitapp.ui.detail.DetailHabitActivity
+import com.dicoding.habitapp.ui.random.RandomHabitActivity
+import com.dicoding.habitapp.utils.DarkMode
 import com.dicoding.habitapp.utils.Event
 import com.dicoding.habitapp.utils.HABIT_ID
 import com.dicoding.habitapp.utils.HabitSortType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 
 class HabitListActivity : AppCompatActivity() {
 
@@ -41,7 +49,7 @@ class HabitListActivity : AppCompatActivity() {
             startActivity(addIntent)
         }
 
-        //TODO 6(DONE) : Initiate RecyclerView with LayoutManager
+        //TODO 6 : Initiate RecyclerView with LayoutManager
         recycler = findViewById(R.id.rv_habit)
         recycler.adapter = myAdapter
         //layout manager grid tapi gak rata jadi pake staggred grid
@@ -51,7 +59,7 @@ class HabitListActivity : AppCompatActivity() {
         val factory = ViewModelFactory.getInstance(this)
         viewModel = ViewModelProvider(this, factory).get(HabitListViewModel::class.java)
 
-        //TODO 7(DONE_update database when onCheckChange?) : Submit pagedList to adapter and update database when onCheckChange
+        //TODO 7 : Submit pagedList to adapter and update database when onCheckChange
         viewModel.habits.observe(this, {
             myAdapter.submitList(it)
         })
@@ -65,16 +73,37 @@ class HabitListActivity : AppCompatActivity() {
             getString(message),
             Snackbar.LENGTH_SHORT
         ).setAction("Undo"){
-            viewModel.insert(viewModel.undo.value?.getContentIfNotHandled() as Habit)
+            runBlocking{
+                async(context = Dispatchers.IO){
+                    viewModel.insert(viewModel.undo.value?.getContentIfNotHandled() as Habit)
+                }.await()
+            }
         }.show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return true
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                val settingIntent = Intent(this, SettingsActivity::class.java)
+                startActivity(settingIntent)
+                true
+            }
+            R.id.action_filter -> {
+                showFilteringPopUpMenu()
+                true
+            }
+            R.id.action_random -> {
+                val randomImtent = Intent(this, RandomHabitActivity::class.java)
+                startActivity(randomImtent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun showFilteringPopUpMenu() {
@@ -116,6 +145,7 @@ class HabitListActivity : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val habit = (viewHolder as HabitAdapter.HabitViewHolder).getHabit
                 viewModel.deleteHabit(habit)
+                showSnackBar(Event(R.string.habit_deleted))
             }
 
         })

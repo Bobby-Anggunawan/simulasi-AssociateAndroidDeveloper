@@ -5,9 +5,14 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.*
 import com.dicoding.habitapp.R
 import com.dicoding.habitapp.data.Habit
+import com.dicoding.habitapp.notification.NotificationWorker
 import com.dicoding.habitapp.utils.HABIT
+import com.dicoding.habitapp.utils.HABIT_ID
+import com.dicoding.habitapp.utils.HABIT_TITLE
+import java.util.concurrent.TimeUnit
 
 class CountDownActivity : AppCompatActivity() {
 
@@ -24,14 +29,44 @@ class CountDownActivity : AppCompatActivity() {
 
         //TODO 10 : Set initial time and observe current time. Update button state when countdown is finished
 
+        viewModel.setInitialTime(habit.minutesFocus)
+        val countDown = findViewById<TextView>(R.id.tv_count_down)
+        viewModel.currentTimeString.observe(this, {
+            countDown.text = it
+        })
+
         //TODO 13 : Start and cancel One Time Request WorkManager to notify when time is up.
+        viewModel.eventCountDownFinish.observe(this, {
+            updateButtonState(!it)
+        })
 
         findViewById<Button>(R.id.btn_start).setOnClickListener {
+            viewModel.startTimer()
+            updateButtonState(true)
 
+            //start work manager
+            val initTime = viewModel.getInitialTime()
+            if(initTime!=null){
+                val myData = workDataOf(
+                    HABIT_ID to habit.id,
+                    HABIT_TITLE to habit.title)
+                val notifWorkRequest: WorkRequest =
+                    OneTimeWorkRequestBuilder<NotificationWorker>()
+                        .setInputData(myData)
+                        .setInitialDelay(initTime, TimeUnit.MILLISECONDS)
+                        .build()
+                WorkManager
+                    .getInstance(this)
+                    .enqueue(notifWorkRequest)
+            }
         }
 
         findViewById<Button>(R.id.btn_stop).setOnClickListener {
+            viewModel.resetTimer()
+            updateButtonState(false)
 
+            //stop work manager
+            WorkManager.getInstance(this).cancelAllWork()
         }
     }
 

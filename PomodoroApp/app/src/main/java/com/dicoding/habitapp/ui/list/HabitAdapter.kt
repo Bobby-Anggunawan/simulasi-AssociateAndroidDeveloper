@@ -15,14 +15,14 @@ class HabitAdapter(
     private val onClick: (Habit) -> Unit
 ) : PagedListAdapter<Habit, HabitAdapter.HabitViewHolder>(DIFF_CALLBACK) {
 
-    //TODO 8(DONE) : Create and initialize ViewHolder
+    //TODO 8 : Create and initialize ViewHolder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.habit_item, parent, false)
         return HabitViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: HabitViewHolder, position: Int) {
-        //TODO 9(DONE) : Get data and bind them to ViewHolder
+        //TODO 9 : Get data and bind them to ViewHolder
         val habit: Habit? = getItem(position)
         if(habit!=null){
             holder.bind(habit)
@@ -45,6 +45,10 @@ class HabitAdapter(
             itemView.setOnClickListener {
                 onClick(habit)
             }
+
+            if(getHabit.priorityLevel == "High") ivPriority.setImageResource(R.drawable.ic_priority_high)
+            else if(getHabit.priorityLevel == "Low") ivPriority.setImageResource(R.drawable.ic_priority_low)
+            else ivPriority.setImageResource(R.drawable.ic_priority_medium)
         }
 
     }

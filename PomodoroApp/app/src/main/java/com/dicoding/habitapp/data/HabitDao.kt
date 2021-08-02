@@ -5,7 +5,7 @@ import androidx.paging.DataSource
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 
-//TODO 2(DONE) : Define data access object (DAO)
+//TODO 2 : Define data access object (DAO)
 @Dao
 interface HabitDao {
 
